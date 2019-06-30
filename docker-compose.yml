@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  oauth2:
+    build: ./oauth2
+    command: npm run dev
+    image: authorize/oauth2
+    volumes:
+      - './oauth2:/usr/src/app'
+    ports:
+      - '9000:8080'
+    networks:
+      - pomelo-network
+    depends_on:
+      - oauth2-db
+    environment:
+      POSTGRES_USER: 'api'
+      POSTGRES_PASSWORD: 'api'
+      POSTGRES_DB: 'oauth2'
+      POSTGRES_HOST: 'oauth2-db'
+      ENABLE_SWAGGER: 'true'
+      IS_ENABLE_DB_LOGGING: 'true'
+  oauth2-db:
+    image: postgres:9.6
+    volumes:
+      - 'postgres-oauth2-db:/var/lib/postgresql/data/pgdata'
+    ports:
+      - '5000:5432'
+    networks:
+      - pomelo-network
+    environment:
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+      POSTGRES_USER: 'api'
+      POSTGRES_PASSWORD: 'api'
+      POSTGRES_DB: 'oauth2'
+volumes:
+  oauth2:
+  postgres-oauth2-db:
+networks:
+  pomelo-network:
