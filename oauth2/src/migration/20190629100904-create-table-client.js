@@ -34,7 +34,7 @@ const accessToken = (queryInterface, Sequelize, transaction) =>
     sequelizeUtil.withDefaultTableFields({
       accessToken: { type: Sequelize.STRING },
       tokenType: { type: Sequelize.STRING },
-      expiresIn: { type: Sequelize.DECIMAL(10, 0) },
+      expires: { type: Sequelize.DATE },
       clientId: sequelizeUtil.withForeignKey({ model: tableName.client }, Sequelize),
       userId: sequelizeUtil.withForeignKey({ model: tableName.user }, Sequelize),
     }, Sequelize),

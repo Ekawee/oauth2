@@ -5,7 +5,7 @@ export default (sequelize, Sequelize) => {
   const attributes = sequelizeUtil.withDefaultTableFields({
     accessToken: { type: Sequelize.STRING },
     tokenType: { type: Sequelize.STRING },
-    expiresIn: { type: Sequelize.DECIMAL(10, 0) },
+    expires: { type: Sequelize.DATE },
     clientId: { type: Sequelize.BIGINT },
     userId: { type: Sequelize.BIGINT },
   }, Sequelize);
@@ -23,11 +23,15 @@ export default (sequelize, Sequelize) => {
     accessToken.belongsTo(entiry.user, { as: 'user' });
   };
 
-  accessToken.saveAccessToken = (token, userId) => {
-    return accessToken.create({ accessToken: token, userId });
+  accessToken.saveAccessToken = (token, userId, expires) => {
+    return accessToken.create({ accessToken: token, userId, expires });
   };
-  accessToken.getUserIDFromBearerToken = (bearerToken) => {
-    return accessToken.findOne({ where: { accessToken: bearerToken } });
+  accessToken.getUserIDFromBearerToken = async (bearerToken) => {
+    const token = await accessToken.findOne({ where: { accessToken: bearerToken } });
+    if(token) {
+      return sequelizeUtil.modelToObject(token);
+    }
+    return null;
   };
 
   return accessToken;

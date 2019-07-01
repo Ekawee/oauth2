@@ -1,17 +1,31 @@
-import { pick, isNil, toString } from 'lodash/fp';
+import { pick, isNil, toString, isObject } from 'lodash/fp';
 import bcryptjs from 'bcryptjs';
-// import { SALT_ROUNDS } from '../constants';
 import entity from '../entity';
-import { InvalidCredentials } from '../exception';
+import { InvalidCredentials, InternalServerError } from '../exception';
 
 const sendResponse = (res, message, error) => {
+  if(isObject(error)) {
+    res
+      .status(500)
+      .send({
+        message,
+        error: toString(error),
+      });
+    throw new InternalServerError(toString(error));
+  } else if (error) {
+    res
+      .status(400)
+      .send({
+        message,
+        error,
+      });
+    throw new InvalidCredentials(toString(error));
+  }
   res
-    .status(error === null || !error ? 200 : 400)
-    .send({
-      message,
-      error: toString(error),
-    });
-  throw new InvalidCredentials(toString(error));
+  .status(200)
+  .send({
+    message,
+  });
 };
 
 const registerUser = async (req, res) => {
