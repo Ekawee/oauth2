@@ -37,7 +37,7 @@
     "dotenv": "^6.0.0",
     "elasticsearch": "^15.1.1",
     "encoding": "^0.1.12",
-    "express": "^4.13.3",
+    "express": "^4.17.3",
     "express-oauth-server": "^2.0.0",
     "express-validation": "^1.0.2",
     "express-winston": "^3.0.1",
